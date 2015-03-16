@@ -14,14 +14,16 @@ module Bravo
 
     def initialize(attrs = {})
       opts = { wsdl: Bravo::AuthData.wsfe_url }.merge! Bravo.logger_options
-      @client       ||= Savon.client(opts)
-      @body           = { 'Auth' => Bravo::AuthData.auth_hash }
-      @iva_condition  = validate_iva_condition(attrs[:iva_condition])
-      @net            = attrs[:net]           || 0
-      @document_type  = attrs[:document_type] || Bravo.default_documento
-      @currency       = attrs[:currency]      || Bravo.default_moneda
-      @concept        = attrs[:concept]       || Bravo.default_concepto
-      @invoice_type   = validate_invoice_type(attrs[:invoice_type])
+      @client        ||= Savon.client(opts)
+      @body            = { 'Auth' => Bravo::AuthData.auth_hash }
+      @iva_condition   = validate_iva_condition(attrs[:iva_condition])
+      @net             = attrs[:net].to_f.round(2) || 0
+      @document_type   = attrs[:document_type] || Bravo.default_documento
+      @currency        = attrs[:currency]      || Bravo.default_moneda
+      @concept         = attrs[:concept]       || Bravo.default_concepto
+      @document_number = attrs[:document_number]
+      @document_type   = attrs[:document_type]
+      @invoice_type    = validate_invoice_type(attrs[:invoice_type])
     end
 
     # Searches the corresponding invoice type according to the combination of
@@ -37,7 +39,7 @@ module Bravo
     # @return [Float] the sum of both fields, or 0 if the net is 0.
     #
     def total
-      @total = net.zero? ? 0 : net + iva_sum
+      @total = net.zero? ? 0.0 : net + iva_sum
     end
 
     # Calculates the corresponding iva sum.
@@ -60,7 +62,6 @@ module Bravo
         # soap.namespaces['xmlns'] = 'http://ar.gov.afip.dif.FEV1/'
         soap.message body
       end
-
       setup_response(response.to_hash)
       self.authorized?
     end
@@ -79,7 +80,7 @@ module Bravo
       detail['ImpTotal']  = total
       detail['CbteDesde'] = detail['CbteHasta'] = Bravo::Reference.next_bill_number(bill_type)
 
-      unless concept == 0
+      unless Bravo::CONCEPTOS[concept] == '01'
         detail.merge!('FchServDesde'  => date_from  || today,
                       'FchServHasta'  => date_to    || today,
                       'FchVtoPago'    => due_date   || today)
