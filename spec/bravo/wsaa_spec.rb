@@ -21,19 +21,19 @@ EOF
 
   describe '.build_tra' do
     it 'sets the body for the ticket request' do
-      Bravo::Wsaa.build_tra.should == @tra
+      expect(Bravo::Wsaa.build_tra).to eq(@tra)
     end
   end
 
   describe '.build_cms' do
-    it 'returns the cms with the tra in it' do
+    xit 'returns the cms with the tra in it' do
       pending 'find a proper way to stub openssl'
     end
   end
 
   describe '.login' do
-    xit 'should work', vcr: { cassette_name: 'login' } do
-      Bravo::Wsaa.login.should be_true
+    it 'should work', vcr: { cassette_name: 'login' } do
+      expect(Bravo::Wsaa.login).to be_truthy
     end
   end
 end

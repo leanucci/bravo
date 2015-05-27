@@ -1,1 +1,1 @@
-Autotest.add_discovery { "rspec2" } # added according to rspec2 book
+Autotest.add_discovery { "rspec3" } # added according to rspec3 book

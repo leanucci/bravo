@@ -31,4 +31,5 @@ task :rmvcr do
   `rm -rf spec/fixtures/vcr_cassettes`
   puts 'Done, moving on.'
 end
+
 task default: :spec
