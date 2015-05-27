@@ -22,11 +22,11 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency(%{savon}, ["~> 2.9.0"])
   gem.add_runtime_dependency(%{thor}, ["~> 0.19.0"])
 
-  gem.add_development_dependency(%{rspec}, ["~> 2.14.0"])
-  gem.add_development_dependency(%{rspec-mocks}, ["~> 2.14.0"])
+  gem.add_development_dependency(%{webmock}, ["~> 1.0"])
+  gem.add_development_dependency(%{rspec}, ["~> 3.0"])
+  gem.add_development_dependency(%{rspec-mocks}, ["~> 3.0"])
   gem.add_development_dependency(%{rake}, ["~> 10.0.0"])
-  gem.add_development_dependency(%{vcr}, ["~> 2.4.0"])
+  gem.add_development_dependency(%{vcr}, ["~> 2.9.3"])
   gem.add_development_dependency(%{simplecov}, ["~> 0.7.0"])
-  gem.add_development_dependency(%{fakeweb}, ["~> 1.3.0"])
   gem.add_development_dependency(%{rubocop}, ["~> 0.26.1"])
 end

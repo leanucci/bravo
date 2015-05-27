@@ -5,20 +5,13 @@ require 'vcr'
 require 'simplecov'
 # SimpleCov.start
 
-begin
-  require 'debugger'
-rescue LoadError
-  puts 'debugger not found'
-end
-
 VCR.configure do |c|
   c.cassette_library_dir = 'spec/fixtures/vcr_cassettes'
-  c.hook_into :fakeweb
+  c.hook_into :webmock
   c.configure_rspec_metadata!
 end
 
 RSpec.configure do |config|
-  config.treat_symbols_as_metadata_keys_with_true_values = true
   config.filter_run focus: true
   config.run_all_when_everything_filtered = true
 end
