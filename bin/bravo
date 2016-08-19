@@ -40,9 +40,7 @@ module Bravo
 
       say("Creando CSR en #{ out_path } con CUIT=#{ cuit }, o=#{ sn } y cn=#{ cn }", :cyan)
 
-      `#{bin} req -new \
-                  -key #{ pkey } \
-                  -subj "/C=AR/O=#{ sn }/CN=#{ cn }/serialNumber=CUIT #{ cuit }"\
+      `#{bin} req -new -key #{ pkey } -subj "/C=AR/O=#{ sn }/CN=#{ cn }/serialNumber=CUIT #{ cuit }"\
                   -out #{ out_path }pedido-#{ cuit }`
 
       say('Hecho!', :green)

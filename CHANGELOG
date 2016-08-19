@@ -1,3 +1,6 @@
+*Bravo 1.0.0 (june 01, 2015)*
+* Refactored auth data to expire after 12 hours
+
 *Bravo 1.0.0.rc1 (November 25, 2013)*
 * Added full support for Savon logging options
 

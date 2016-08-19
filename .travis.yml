@@ -2,10 +2,9 @@ language: ruby
 rvm:
   - 2.0.0
   - 2.1.2
-bundler_args: --without test
-branches:
-  only:
-    - master
+  - 2.2.0
 script:
-  - bundle exec rspec spec
+  - rm -rf spec/fixtures/vcr_cassettes/
+  - if [ -e /tmp/bravo* ]; then rm /tmp/bravo*; fi
+  - bundle exec rspec spec --format=progress
   - bundle exec rubocop

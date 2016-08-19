@@ -7,18 +7,10 @@
 
 ## Requisitos
 
-Para poder autorizar comprobantes mediante el WSFE, AFIP requiere de ciertos pasos detallados a continuación:
-
-* Generar una clave privada para la aplicación.
-* Generar un CSR (Certificate Signing Request) utilizando el número de CUIT que emitirá los comprobantes y la clave privada del paso anterior. Se deberá enviar a AFIP el CSR para obtener el Certificado X.509 que se utilizará en el proceso de autorización de comprobantes.
-	* Para el entorno de Testing, se debe enviar el X.509 por email a _webservices@afip.gov.ar_.
-	* Para el entorno de Producción, el trámite se hace a través del portal [AFIP](http://www.afip.gov.ar)
-* El certificado X.509 y la clave privada son utilizados por Bravo para obtener el token y signature a incluir en el header de autenticacion en cada request que hagamaos a los servicios de AFIP.
-
-
+Guía para obtener certificados WSAA [aquí](http://www.afip.gov.ar/ws/WSAA/cert-req-howto.txt)
 ### OpenSSL
 
-Para cumplir con los requisitos de encriptación del [Web Service de Autenticación y Autorización](http://www.afip.gov.ar/ws/WSAA/README.txt) (WSAA), Bravo requiere [OpenSSL](http://openssl.org) en cualquier versión posterior a la 1.0.0a.
+Para cumplir con los requisitos de encriptación del [Web Service de Autenticación y Autorización](http://www.afip.gov.ar/ws/WSAA/README.txt) (WSAA), Bravo requiere [OpenSSL](http://openssl.org) en cualquier versión igual o posterior a la 1.0.0a.
 
 Como regla general, basta correr desde la línea de comandos ```openssl cms```
 
@@ -26,7 +18,7 @@ Si el comando ```cms``` no está disponible, se debe actualizar OpenSSL.
 
 ### Certificados
 
-AFIP exige para acceder a sus Web Services, la utilización del WSAA. Este servicio se encarga de la autorización y autenticación de cada request hecho al web service.
+AFIP exige estar identificado para acceder a sus Web Services, mediante la utilización del WSAA. Este servicio se encarga de la autorización y autenticación de cada request hecho al web service. Para esto, hay que generar un mensaje encriptado, que se utiliza para el login en el WSAA. Si este login es exitoso, se obtienen credenciales válidas por 12 horas.
 
 Una vez instalada la version correcta de OpenSSL, podemos generar la clave privada y el CSR.
 
@@ -38,9 +30,22 @@ Una vez instalada la version correcta de OpenSSL, podemos generar la clave priva
 
 Luego de haber obtenido el certificado X.509, podemos comenzar a utilizar Bravo en el entorno para el cual sirve el certificado.
 
-### Configuración
+### Autorización
 
-Bravo no asume valores por defecto, por lo cual hay que configurar de forma explícita todos los parámetros:
+Cada mensajeLa clase Authorizations es la encargada de manejar las credenciales con las que se autentican los mensajes
+enviados a afip.
+
+El primer paso, es crear una nueva instancia de Bravo::Authorization con el número de cuit y la ruta a los
+archivos de certificado y clave privada:
+
+```ruby
+authorization = Bravo::Authorization.new
+authorization.cuit = '2028774002'
+authorization.pkey_path = 'path/al/pkey'
+authorization.cert_path = 'path/al/cert'
+```
+
+
 
 * ```pkey``` ruta a la clave privada
 * ```cert``` ruta al certificado X.509

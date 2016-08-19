@@ -1,34 +1,31 @@
 ---
 AllCops:
   Exclude:
-  - 'doc/'
-  - 'coverage/'
-  - 'pkg/'
-  - 'tmp/'
+  - 'bin/*'
 
 Metrics/CyclomaticComplexity:
-  Severity: error
+  Severity: refactor
   Max: 8
 
 Metrics/LineLength:
   Max: 110
-  Severity: error
+  Severity: refactor
 
 Metrics/ClassLength:
   Max: 150
-  Severity: error
+  Severity: refactor
 
 Metrics/MethodLength:
   Max: 15
-  Severity: error
+  Severity: refactor
 
 Metrics/ParameterLists:
   Max: 5
-  Severity: error
+  Severity: refactor
 
 Metrics/PerceivedComplexity:
   Max: 10
-  Severity: error
+  Severity: refactor
 
 Lint/EndAlignment:
   AlignWith: variable
@@ -44,7 +41,7 @@ Style/CaseEquality:
 
 Style/Documentation:
   Enabled: false
-  Severity: error
+  Severity: refactor
 
 Style/IfUnlessModifier:
   MaxLineLength: 80
@@ -53,9 +50,6 @@ Style/GuardClause:
   MinBodyLength: 3
 
 Style/Lambda:
-  Enabled: false
-
-Style/EmptyLinesAroundBody:
   Enabled: false
 
 Style/EmptyLineBetweenDefs:
@@ -96,13 +90,13 @@ Style/CaseIndentation:
   IndentWhenRelativeTo: end
 
 Style/PredicateName:
-  Severity: error
+  Severity: refactor
 
 Style/IndentHash:
   EnforcedStyle: consistent
 
 Style/MultilineBlockChain:
-  Severity: error
+  Severity: refactor
 
 Lint/AssignmentInCondition:
   Enabled: false
@@ -134,7 +128,7 @@ Style/CollectionMethods:
     find_all!: 'select!'
 
 Style/DoubleNegation:
-  Severity: error
+  Severity: refactor
 
 Style/SignalException:
   EnforcedStyle: only_raise
@@ -158,6 +152,6 @@ Style/RescueModifier:
   Enabled: false
 
 Style/Blocks:
-  Severity: error
+  Severity: refactor
   Exclude:
   - '**/spec/**/*_spec.rb'

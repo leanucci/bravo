@@ -7,13 +7,17 @@ module Bravo
     # Main method for authentication and authorization.
     # When successful, produces the yaml file with auth data.
     #
-    def self.login
+    def self.login(pkey_path, cert_path)
       tra   = build_tra
-      cms   = build_cms(tra)
+      cms   = build_cms(tra, pkey_path, cert_path)
       req   = build_request(cms)
-      auth  = call_wsaa(req)
+      call_wsaa(req)
+    end
 
-      write_yaml(auth)
+    def self.login_to_file(filename, pkey_path, cert_path)
+      auth = login(pkey_path, cert_path)
+      write_yaml(auth, filename)
+      auth
     end
 
     # Builds the xml for the 'Ticket de Requerimiento de Acceso'
@@ -42,9 +46,9 @@ EOF
     # Builds the CMS
     # @return [String] cms
     #
-    def self.build_cms(tra)
+    def self.build_cms(tra, pkey_path, cert_path)
       `echo '#{ tra }' |
-        #{ Bravo.openssl_bin } cms -sign -in /dev/stdin -signer #{ Bravo.cert } -inkey #{ Bravo.pkey } \
+        #{ Bravo.openssl_bin } cms -sign -in /dev/stdin -signer #{ cert_path } -inkey #{ pkey_path }  \
         -nodetach -outform der |
         #{ Bravo.openssl_bin } base64 -e`
     end
@@ -73,25 +77,28 @@ XML
     # Calls the WSAA with the request built by build_request
     # @return [Array] with the token and signature
     #
+    # rubocop:disable Metrics/AbcSize
     def self.call_wsaa(req)
+      # XXX: a request made too soon after a successful one throws an error. deal with it
       response = `echo '#{ req }' |
-        curl -k -s -H 'Content-Type: application/soap+xml; action=""' -d @- #{ Bravo::AuthData.wsaa_url }`
+        curl -k -s -H 'Content-Type: application/soap+xml; action=""' -d @- #{ Authorization.wsaa_url }`
 
-      response = CGI::unescapeHTML(response)
-      token = response.scan(%r{\<token\>(.+)\<\/token\>}).first.first
-      sign  = response.scan(%r{\<sign\>(.+)\<\/sign\>}).first.first
-      [token, sign]
+      response = CGI.unescapeHTML(response)
+      puts response
+      # ns1:coe.alreadyAuthenticated grepear esto para evitar errores
+      token = response.scan(%r{\<token\>(.+)\<\/token\>}).flatten.first
+      sign  = response.scan(%r{\<sign\>(.+)\<\/sign\>}).flatten.first
+      created_at = response.scan(%r{\<generationTime\>(.+)\<\/generationTime\>}).flatten.first
+      expires_at = response.scan(%r{\<expirationTime\>(.+)\<\/expirationTime\>}).flatten.first
+
+      { token: token, sign: sign, created_at: created_at, expires_at: expires_at }
     end
+    # rubocop:enable Metrics/AbcSize
 
     # Writes the token and signature to a YAML file in the /tmp directory
     #
-    def self.write_yaml(certs)
-      yml = <<-YML
-token: #{certs[0]}
-sign: #{certs[1]}
-YML
-      `echo '#{ yml }' > /tmp/bravo_#{ Bravo.cuit }_#{ Time.new.strftime('%Y_%m_%d') }.yml`
+    def self.write_yaml(credentials, filename)
+      File.write(filename, credentials.to_yaml)
     end
-
   end
 end

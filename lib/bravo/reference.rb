@@ -5,11 +5,11 @@ module Bravo
     # Fetches the number for the next bill to be issued
     # @return [Integer] the number for the next bill
     #
-    def self.next_bill_number(cbte_type)
+    def self.next_bill_number(cuit, cbte_type)
       set_client
       resp = @client.call(:fe_comp_ultimo_autorizado) do |soap|
         # soap.namespaces['xmlns'] = 'http://ar.gov.afip.dif.FEV1/'
-        soap.message 'Auth' => Bravo::AuthData.auth_hash, 'PtoVta' => Bravo.sale_point,
+        soap.message 'Auth' => Authorization.for(cuit).auth_hash, 'PtoVta' => Bravo.sale_point,
           'CbteTipo' => cbte_type
       end
 
@@ -19,10 +19,10 @@ module Bravo
     # Fetches the possible document codes and names
     # @return [Hash]
     #
-    def self.get_custom(operation)
+    def self.get_custom(cuit, operation)
       set_client
       resp = @client.call(operation) do |soap|
-        soap.message 'Auth' => Bravo::AuthData.auth_hash
+        soap.message 'Auth' => Authorization.for(cuit).auth_hash
       end
       resp.to_hash
     end
@@ -31,7 +31,7 @@ module Bravo
     #
     #
     def self.set_client
-      opts = { wsdl: Bravo::AuthData.wsfe_url }.merge! Bravo.logger_options
+      opts = { wsdl: Authorization.wsfe_url }.merge! Bravo.logger_options
       @client = Savon.client(opts)
     end
   end
