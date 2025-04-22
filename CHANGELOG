@@ -1,15 +1,8 @@
-*Bravo 1.0.0.rc1 (November 25, 2013)*
-* Added full support for Savon logging options
+*Bravo 0.4.0 (March 21, 2011)*
 
-*Bravo 1.0.0.alpha (March 30 - Nov 25, 2013)*
+* Auth service URL is now part of the config [miloops]
 
-* Updated dependencies
-* Added reference class that will pass any method to the api, without a message
-* Added bravo binary, which handles CSR and pkey generation
-* rdoc
-* Added support for nota de credito and nota de debito
-
-*Bravo 0.3.6 (March 14, 2011) *
+*Bravo 0.3.6 (March 14, 2011)*
 
 * Hash extensions play nice with Rails 2.3 ruby 1.9 [miloops]
 
