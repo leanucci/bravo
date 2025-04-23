@@ -23,5 +23,6 @@ module Bravo
     {"Token" => Bravo::TOKEN, "Sign"  => Bravo::SIGN, "Cuit"  => Bravo.cuit}
   end
 
-  Savon::Request.log = false unless (Bravo.verbose == "true") || (ENV["VERBOSE"] == true)
+  # TODO: look into logging for savon
+  # Savon::SOAPRequest.log = false unless (Bravo.verbose == "true") || (ENV["VERBOSE"] == true)
 end
