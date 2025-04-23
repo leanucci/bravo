@@ -12,9 +12,7 @@ module Bravo
         end
 
         todays_datafile = "/tmp/bravo_#{Time.new.strftime('%d_%m_%Y')}.yml"
-        opts = "-u #{Bravo.auth_url}"
-        opts += " -k #{Bravo.pkey}"
-        opts += " -c #{Bravo.cert}"
+        opts = "-u #{Bravo.auth_url} -k #{ENV['PKEY']} -c #{ENV['CERT']}"
 
         unless File.exists?(todays_datafile)
           %x(#{File.dirname(__FILE__)}/../../wsaa-client.sh #{opts})
