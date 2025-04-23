@@ -46,9 +46,9 @@ function MakeCMS()
 {
   CMS=$(
     echo "$TRA" |
-    /usr/local/ssl/bin/openssl cms -sign -in /dev/stdin -signer $CRT -inkey $KEY -nodetach \
+    openssl cms -sign -in /dev/stdin -signer $CRT -inkey $KEY -nodetach \
             -outform der |
-    /usr/local/ssl/bin/openssl base64 -e
+    openssl base64 -e
   )
 }
 #------------------------------------------------------------------------------
