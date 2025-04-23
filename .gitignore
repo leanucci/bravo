@@ -1,0 +1,34 @@
+# rcov generated
+coverage
+
+# rdoc generated
+rdoc
+
+# yard generated
+doc
+.yardoc
+
+# bundler
+.bundle
+
+# jeweler generated
+pkg
+
+# MacOS
+.DS_Store
+
+# TextMate
+*.tmproj
+tmtags
+
+# Other
+.rspec
+log/
+log/*.log
+./fixtures/
+./fixtures/vcr_cassettes/
+*.gem
+tmp/
+bin/bravo-certs/
+.ruby-version
+Gemfile.lock
