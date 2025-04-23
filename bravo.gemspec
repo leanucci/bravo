@@ -11,13 +11,12 @@ Gem::Specification.new do |s|
   s.authors = ["Leandro Marcucci"]
   s.date = %q{2011-03-21}
   s.description = %q{Adaptador para el Web Service de Facturacion Electronica de AFIP}
-  s.email = %q{leanucci@vurbia.com}
+  s.email = %q{leanucci@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.textile"
   ]
   s.files = [
-    ".document",
     "CHANGELOG",
     "Gemfile",
     "Gemfile.lock",
@@ -25,7 +24,6 @@ Gem::Specification.new do |s|
     "README.textile",
     "Rakefile",
     "VERSION",
-    "autotest/discover.rb",
     "bravo.gemspec",
     "lib/bravo.rb",
     "lib/bravo/auth_data.rb",
@@ -42,11 +40,11 @@ Gem::Specification.new do |s|
     "spec/spec_helper.rb",
     "wsaa-client.sh"
   ]
-  s.homepage = %q{http://github.com/Vurbia/Bravo}
+  s.homepage = %q{http://github.com/leanucci/Bravo}
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.6.2}
-  s.summary = %q{Adaptador AFIP wsfe.}
+  s.rubygems_version = %q{3.1.6}
+  s.summary = %q{Adaptador AFIP wsfe}
   s.test_files = [
     "spec/bravo/auth_data_spec.rb",
     "spec/bravo/authorizer_spec.rb",
@@ -63,7 +61,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<ruby-debug-base19>, ["= 0.11.24"])
       s.add_development_dependency(%q<ruby-debug19>, ["= 0.11.6"])
       s.add_development_dependency(%q<rspec>, ["~> 2.4.0"])
-      s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
+      s.add_development_dependency(%q<bundler>, ["~> 2.4.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.1"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
     else
@@ -82,7 +80,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<ruby-debug-base19>, ["= 0.11.24"])
     s.add_dependency(%q<ruby-debug19>, ["= 0.11.6"])
     s.add_dependency(%q<rspec>, ["~> 2.4.0"])
-    s.add_dependency(%q<bundler>, ["~> 1.0.0"])
+    s.add_dependency(%q<bundler>, ["~> 2"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.1"])
     s.add_dependency(%q<rcov>, [">= 0"])
   end

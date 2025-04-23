@@ -1,10 +1,9 @@
 $:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'bravo'
 require 'rspec'
-require 'ruby-debug'
+require 'debug'
 
 class SpecHelper
-  include Savon::Logger
 end
 
 # Requires supporting files with custom matchers and macros, etc,
