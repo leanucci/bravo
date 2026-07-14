@@ -17,8 +17,9 @@ module Bravo
     end
 
     def cbte_type
-      Bravo::BILL_TYPE[Bravo.own_iva_cond][iva_cond] ||
+      puts ctype = Bravo::BILL_TYPE[Bravo.own_iva_cond][iva_cond] ||
         raise(NullOrInvalidAttribute.new, "Please choose a valid document type.")
+      ctype
     end
 
     def exchange_rate
@@ -65,6 +66,7 @@ module Bravo
                         "MonCotiz"    => exchange_rate,
                         "ImpOpEx"     => 0.00,
                         "ImpTrib"     => 0.00,
+                        "CondicionIVAReceptorId" => "6",
                         "Iva"         => {
                           "AlicIva" => {
                             "Id" => "5",
