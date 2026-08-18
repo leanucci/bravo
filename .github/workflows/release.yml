@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: Run tests
+        env:
+          CUIT: 20287740027
+        run: bundle exec rspec
+
+      - name: Build gem
+        run: gem build *.gemspec
+
+      - name: Publish to RubyGems
+        run: |
+          mkdir -p ~/.gem
+          echo ":rubygems_api_key: ${{ secrets.RUBYGEMS_API_KEY }}" > ~/.gem/credentials
+          chmod 600 ~/.gem/credentials
+          gem push *.gem

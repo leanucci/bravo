@@ -103,15 +103,23 @@ describe "Reference" do
     end
   end
 
-  describe "tipos comprobante" do
-    it "should get tipos comprobante" do
-      puts @reference.tipos_cbte
+  describe "#tipos_cbte" do
+    it "should return an array of invoice types" do
+      result = @reference.tipos_cbte
+      result.should be_a(Array)
+      result.should_not be_empty
+      result.first.should have_key(:id)
+      result.first.should have_key(:descripcion)
     end
   end
 
-  describe "tipos comprobante" do
-    it "should get tipos comprobante" do
-      puts @reference.alic_iva
+  describe "#alic_iva" do
+    it "should return an array of IVA rates" do
+      result = @reference.alic_iva
+      result.should be_a(Array)
+      result.should_not be_empty
+      result.first.should have_key(:id)
+      result.first.should have_key(:descripcion)
     end
   end
 end
