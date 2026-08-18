@@ -2,6 +2,7 @@ require "bundler/setup"
 require "bravo/version"
 require "bravo/constants"
 require "savon"
+require "wsaa"
 require "bravo/core_ext/float"
 require "bravo/core_ext/hash"
 require "bravo/core_ext/string"
@@ -23,6 +24,4 @@ module Bravo
   def auth_hash
     {"Token" => Bravo::TOKEN, "Sign"  => Bravo::SIGN, "Cuit"  => Bravo.cuit}
   end
-
-  Savon::Request.log = false unless (Bravo.verbose == "true") || (ENV["VERBOSE"] == true)
 end

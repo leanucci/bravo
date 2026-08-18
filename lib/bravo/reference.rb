@@ -1,34 +1,24 @@
 # encoding: utf-8
 module Bravo
+  ##
+  # Queries reference data from AFIP's WSFE service.
+  #
+  # Provides methods to fetch IVA rates, invoice types, and other parameters.
   class Reference
     attr_reader :client
 
     def initialize
       Bravo::AuthData.fetch
-      @client = Savon::Client.new(Bravo.service_url)
+      @client = Savon.client(wsdl: Bravo.service_url, log: false)
     end
 
     def alic_iva
-      body = {"Auth" => Bravo.auth_hash}
-
-      response = client.fe_param_get_tipos_iva do |soap|
-        soap.namespaces["xmlns"] = "http://ar.gov.afip.dif.FEV1/"
-        soap.body = body
-      end
-
-      response.to_hash
+      response = client.call(:fe_param_get_tipos_iva, message: {"Auth" => Bravo.auth_hash})
       parse_fe_param_get_tipos_iva_response(response.to_hash)
     end
 
     def tipos_cbte
-      body = {"Auth" => Bravo.auth_hash}
-
-      response = client.fe_param_get_tipos_cbte do |soap|
-        soap.namespaces["xmlns"] = "http://ar.gov.afip.dif.FEV1/"
-        soap.body = body
-      end
-
-      response.to_hash
+      response = client.call(:fe_param_get_tipos_cbte, message: {"Auth" => Bravo.auth_hash})
       parse_fe_param_get_tipos_cbte_response(response.to_hash)
     end
 
@@ -36,21 +26,17 @@ module Bravo
       body = {"Auth" => Bravo.auth_hash}
       body["ClaseCmp"] = clase_cmp if clase_cmp
 
-      response = client.fe_param_get_condicion_iva_receptor do |soap|
-        soap.namespaces["xmlns"] = "http://ar.gov.afip.dif.FEV1/"
-        soap.body = body
-      end
-
+      response = client.call(:fe_param_get_condicion_iva_receptor, message: body)
       parse_condicion_iva_receptor_response(response.to_hash)
     end
 
     def exchange_rate(moneda)
       return 1 if moneda == :peso
 
-      response = client.fe_param_get_cotizacion do |soap|
-        soap.namespaces["xmlns"] = "http://ar.gov.afip.dif.FEV1/"
-        soap.body = {"Auth" => Bravo.auth_hash, "MonId" => Bravo::MONEDAS[moneda][:codigo]}
-      end
+      response = client.call(:fe_param_get_cotizacion, message: {
+        "Auth" => Bravo.auth_hash,
+        "MonId" => Bravo::MONEDAS[moneda][:codigo]
+      })
 
       response.to_hash[:fe_param_get_cotizacion_response][:fe_param_get_cotizacion_result][:result_get][:mon_cotiz].to_f
     end
@@ -58,10 +44,11 @@ module Bravo
     def ultimo_comprobante(cbte_tipo, pto_vta = nil)
       pto_vta ||= Bravo.sale_point
 
-      response = client.fe_comp_ultimo_autorizado do |soap|
-        soap.namespaces["xmlns"] = "http://ar.gov.afip.dif.FEV1/"
-        soap.body = {"Auth" => Bravo.auth_hash, "PtoVta" => pto_vta, "CbteTipo" => cbte_tipo}
-      end
+      response = client.call(:fe_comp_ultimo_autorizado, message: {
+        "Auth" => Bravo.auth_hash,
+        "PtoVta" => pto_vta,
+        "CbteTipo" => cbte_tipo
+      })
 
       response.to_hash[:fe_comp_ultimo_autorizado_response][:fe_comp_ultimo_autorizado_result][:cbte_nro].to_i
     end
@@ -89,6 +76,7 @@ module Bravo
         }
       end
     end
+
     def parse_condicion_iva_receptor_response(response_hash)
       result = response_hash[:fe_param_get_condicion_iva_receptor_response][:fe_param_get_condicion_iva_receptor_result]
 
