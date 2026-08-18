@@ -131,6 +131,60 @@ module Bravo
       response.to_hash[:fe_comp_ultimo_autorizado_response][:fe_comp_ultimo_autorizado_result][:cbte_nro].to_i
     end
 
+    ##
+    # Queries an authorized invoice (comprobante).
+    #
+    # @param cbte_tipo [String] Invoice type code.
+    # @param cbte_nro [Integer] Invoice number.
+    # @param pto_vta [String, nil] Sales point number (defaults to Bravo.sale_point).
+    # @return [Hash] Invoice details including CAE, dates, amounts.
+    def consultar_comprobante(cbte_tipo, cbte_nro, pto_vta = nil)
+      pto_vta ||= Bravo.sale_point
+
+      response = client.call(:fe_comp_consultar, message: {
+        "Auth" => Bravo.auth_hash,
+        "FeCompConsReq" => {
+          "CbteTipo" => cbte_tipo,
+          "CbteNro" => cbte_nro,
+          "PtoVta" => pto_vta
+        }
+      })
+
+      parse_consultar_comprobante(response)
+    end
+
+    ##
+    # Requests CAEA (Código de Autorización Electrónico Anticipado).
+    #
+    # @param periodo [String] Period in YYYYMM format.
+    # @param orden [Integer] Order within the period (1 = first half, 2 = second half).
+    # @return [Hash] CAEA details including code, validity dates.
+    def solicitar_caea(periodo, orden)
+      response = client.call(:fecaea_solicitar, message: {
+        "Auth" => Bravo.auth_hash,
+        "Periodo" => periodo,
+        "Orden" => orden
+      })
+
+      parse_caea_response(response, :fecaea_solicitar)
+    end
+
+    ##
+    # Queries an existing CAEA.
+    #
+    # @param periodo [String] Period in YYYYMM format.
+    # @param orden [Integer] Order within the period (1 = first half, 2 = second half).
+    # @return [Hash] CAEA details including code, validity dates.
+    def consultar_caea(periodo, orden)
+      response = client.call(:fecaea_consultar, message: {
+        "Auth" => Bravo.auth_hash,
+        "Periodo" => periodo,
+        "Orden" => orden
+      })
+
+      parse_caea_response(response, :fecaea_consultar)
+    end
+
     private
 
     def parse_result(response, operation, item_key)
@@ -179,6 +233,47 @@ module Bravo
           clase_comprobante: c[:cmp_clase]
         }
       end
+    end
+
+    def parse_consultar_comprobante(response)
+      result = response.to_hash[:fe_comp_consultar_response][:fe_comp_consultar_result][:result_get]
+      return nil unless result
+
+      {
+        cbte_tipo: result[:cbte_tipo].to_i,
+        pto_vta: result[:pto_vta].to_i,
+        cbte_nro: result[:cbte_nro].to_i,
+        cbte_fch: result[:cbte_fch],
+        imp_total: result[:imp_total].to_f,
+        imp_neto: result[:imp_neto].to_f,
+        imp_iva: result[:imp_iva].to_f,
+        imp_op_ex: result[:imp_op_ex].to_f,
+        imp_trib: result[:imp_trib].to_f,
+        cae: result[:cod_autorizacion],
+        cae_fch_vto: result[:fch_vto],
+        doc_tipo: result[:doc_tipo].to_i,
+        doc_nro: result[:doc_nro].to_i,
+        mon_id: result[:mon_id],
+        mon_cotiz: result[:mon_cotiz].to_f,
+        resultado: result[:resultado]
+      }
+    end
+
+    def parse_caea_response(response, operation)
+      response_key = "#{operation}_response".to_sym
+      result_key = "#{operation}_result".to_sym
+      result = response.to_hash[response_key][result_key][:result_get]
+      return nil unless result
+
+      {
+        caea: result[:caea],
+        periodo: result[:periodo],
+        orden: result[:orden].to_i,
+        fch_vig_desde: result[:fch_vig_desde],
+        fch_vig_hasta: result[:fch_vig_hasta],
+        fch_tope_inf: result[:fch_tope_inf],
+        fch_proceso: result[:fch_proceso]
+      }
     end
   end
 end

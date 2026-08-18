@@ -235,4 +235,44 @@ describe "Reference" do
       descriptions.any? { |d| d =~ /argentina/i }.should == true
     end
   end
+
+  describe "#consultar_comprobante" do
+    it "should return invoice details for existing invoice" do
+      last_nro = @reference.ultimo_comprobante("06")
+      next if last_nro == 0
+
+      result = @reference.consultar_comprobante("06", last_nro)
+      result.should be_a(Hash)
+    end
+
+    it "should return expected keys for invoice" do
+      last_nro = @reference.ultimo_comprobante("06")
+      next if last_nro == 0
+
+      result = @reference.consultar_comprobante("06", last_nro)
+      result.should have_key(:cbte_tipo)
+      result.should have_key(:cbte_nro)
+      result.should have_key(:imp_total)
+      result.should have_key(:cae)
+    end
+
+    it "should return nil for non-existent invoice" do
+      result = @reference.consultar_comprobante("01", 999999999)
+      result.should be_nil
+    end
+  end
+
+  describe "#consultar_caea" do
+    it "should return CAEA details or nil" do
+      result = @reference.consultar_caea("202608", 2)
+      if result
+        result.should be_a(Hash)
+        result.should have_key(:caea)
+        result.should have_key(:periodo)
+        result.should have_key(:orden)
+      else
+        result.should be_nil
+      end
+    end
+  end
 end
