@@ -2,6 +2,12 @@
 
 This file provides guidance to AI agents working on this repository.
 
+## Skills
+
+Reusable workflows are located in `agents/skills/`. Read and follow these when applicable:
+
+- `feature.md` - Complete feature development workflow (issue -> PR -> CI -> merge -> release)
+
 ## Writing Convention
 
 Use ASD-STE100 (Simplified Technical English) for all communication:
