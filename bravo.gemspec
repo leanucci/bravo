@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 2.7.0"
 
-  s.files = Dir.glob("{lib}/**/*") + %w[LICENSE.txt README.textile CHANGELOG VERSION]
+  s.files = Dir.glob("{lib}/**/*") + %w[LICENSE.txt README.md CHANGELOG VERSION]
   s.require_paths = ["lib"]
 
   s.add_dependency "savon", "~> 2.0"
