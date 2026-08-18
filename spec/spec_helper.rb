@@ -1,15 +1,35 @@
 $:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'bravo'
 require 'rspec'
-# require 'ruby-debug'
+require 'webmock/rspec'
+require 'vcr'
 
-class SpecHelper
-  include Savon::Logger
+VCR.configure do |config|
+  config.cassette_library_dir = 'spec/fixtures/vcr_cassettes'
+  config.hook_into :webmock
+  config.configure_rspec_metadata!
+  config.default_cassette_options = {
+    record: ENV['VCR_RECORD'] ? :new_episodes : :none,
+    match_requests_on: [:method, :uri]
+  }
 end
 
-# Requires supporting files with custom matchers and macros, etc,
-# in ./support/ and its subdirectories.
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
+WebMock.disable_net_connect!
+
+RSpec.configure do |config|
+  config.expect_with :rspec do |expectations|
+    expectations.syntax = [:should, :expect]
+  end
+
+  config.around(:each) do |example|
+    if example.metadata[:vcr]
+      VCR.use_cassette(example.metadata[:vcr]) { example.run }
+    else
+      cassette_name = example.full_description.gsub(/[^\w]/, '_').downcase
+      VCR.use_cassette(cassette_name) { example.run }
+    end
+  end
+end
 
 Bravo.pkey = "spec/fixtures/pkey"
 Bravo.cert = "spec/fixtures/cert.crt"

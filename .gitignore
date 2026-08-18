@@ -27,6 +27,9 @@ log/
 log/*.log
 fixtures/
 fixtures/*
+
+# Allow VCR cassettes
+!spec/fixtures/vcr_cassettes/
 *.gem
 
 # Documentation files
