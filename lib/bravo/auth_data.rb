@@ -1,28 +1,31 @@
 module Bravo
+  ##
+  # Fetches authentication credentials from AFIP's WSAA service.
+  #
+  # Uses the wsaa-ruby gem to obtain TOKEN and SIGN credentials.
+  # Credentials are cached by the gem until expiration.
   class AuthData
 
     class << self
+      ##
+      # Fetches authentication credentials and sets TOKEN/SIGN constants.
+      #
+      # @raise [Wsaa::ConfigurationError] If pkey or cert configuration is invalid.
+      # @raise [Wsaa::AuthenticationError] If authentication fails.
       def fetch
-        unless File.exists?(Bravo.pkey)
-          raise "Archivo de llave privada no encontrado en #{Bravo.pkey}"
+        environment = Bravo.auth_url.include?("homo") ? :testing : :production
+
+        Wsaa.configure do |config|
+          config.pkey = Bravo.pkey
+          config.cert = Bravo.cert
+          config.service = "wsfe"
+          config.environment = environment
         end
 
-        unless File.exists?(Bravo.cert)
-          raise "Archivo certificado no encontrado en #{Bravo.cert}"
-        end
+        credentials = Wsaa.authenticate
 
-        todays_datafile = "/tmp/bravo_#{Time.new.strftime('%d_%m_%Y')}.yml"
-        opts = "-u #{Bravo.auth_url}"
-        opts += " -k #{Bravo.pkey}"
-        opts += " -c #{Bravo.cert}"
-
-        unless File.exists?(todays_datafile)
-          %x(#{File.dirname(__FILE__)}/../../wsaa-client.sh #{opts})
-        end
-
-        @data = YAML.load_file(todays_datafile).each do |k, v|
-          Bravo.const_set(k.to_s.upcase, v) unless Bravo.const_defined?(k.to_s.upcase)
-        end
+        Bravo.const_set(:TOKEN, credentials.token) unless Bravo.const_defined?(:TOKEN)
+        Bravo.const_set(:SIGN, credentials.sign) unless Bravo.const_defined?(:SIGN)
       end
     end
   end

@@ -29,10 +29,16 @@ RSpec.configure do |config|
       VCR.use_cassette(cassette_name) { example.run }
     end
   end
+
+  config.before(:each) do
+    unless Bravo.const_defined?(:TOKEN)
+      Bravo.const_set(:TOKEN, "test_token")
+      Bravo.const_set(:SIGN, "test_sign")
+    end
+    allow(Bravo::AuthData).to receive(:fetch)
+  end
 end
 
-Bravo.pkey = "spec/fixtures/pkey"
-Bravo.cert = "spec/fixtures/cert.crt"
 Bravo.cuit = ENV["CUIT"] || raise(Bravo::NullOrInvalidAttribute.new, "Please set CUIT env variable.")
 Bravo.sale_point = "0002"
 Bravo.auth_url = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms"

@@ -1,4 +1,8 @@
 module Bravo
+  ##
+  # Represents an electronic invoice (factura electronica) for AFIP.
+  #
+  # Creates and authorizes invoices through the WSFE service.
   class Bill
     attr_reader :client, :base_imp, :total
     attr_accessor :net, :doc_num, :iva_cond, :documento, :concepto, :moneda,
@@ -7,7 +11,7 @@ module Bravo
 
     def initialize(attrs = {})
       Bravo::AuthData.fetch
-      @client         = Savon::Client.new(Bravo.service_url)
+      @client         = Savon.client(wsdl: Bravo.service_url, log: false)
       @body           = {"Auth" => Bravo.auth_hash}
       @net            = attrs[:net] || 0
       self.documento  = attrs[:documento] || Bravo.default_documento
@@ -45,10 +49,7 @@ module Bravo
 
     def authorize
       setup_bill
-      response = client.fecae_solicitar do |soap|
-        soap.namespaces["xmlns"] = "http://ar.gov.afip.dif.FEV1/"
-        soap.body = body
-      end
+      response = client.call(:fecae_solicitar, message: body)
 
       setup_response(response.to_hash)
       self.authorized?
@@ -97,10 +98,11 @@ module Bravo
     end
 
     def next_bill_number
-      resp = client.fe_comp_ultimo_autorizado do |s|
-        s.namespaces["xmlns"] = "http://ar.gov.afip.dif.FEV1/"
-        s.body = {"Auth" => Bravo.auth_hash, "PtoVta" => Bravo.sale_point, "CbteTipo" => cbte_type}
-      end
+      resp = client.call(:fe_comp_ultimo_autorizado, message: {
+        "Auth" => Bravo.auth_hash,
+        "PtoVta" => Bravo.sale_point,
+        "CbteTipo" => cbte_type
+      })
 
       resp.to_hash[:fe_comp_ultimo_autorizado_response][:fe_comp_ultimo_autorizado_result][:cbte_nro].to_i + 1
     end
@@ -118,8 +120,6 @@ module Bravo
     end
 
     def setup_response(response)
-      # TODO: turn this into an all-purpose Response class
-
       result          = response[:fecae_solicitar_response][:fecae_solicitar_result]
 
       response_header = result[:fe_cab_resp]
