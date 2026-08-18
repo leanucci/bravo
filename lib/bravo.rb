@@ -10,7 +10,6 @@ module Bravo
 
   class NullOrInvalidAttribute < StandardError; end
 
-  autoload :Authorizer,   "bravo/authorizer"
   autoload :AuthData,     "bravo/auth_data"
   autoload :Bill,         "bravo/bill"
   autoload :Constants,    "bravo/constants"
