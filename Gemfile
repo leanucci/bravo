@@ -1,5 +1,7 @@
 source "http://rubygems.org"
-gem "savon", "~> 0.7.8"
+gem "savon", "~> 2.0"
+gem "wsaa-ruby", "~> 0.2"
+gem "rack", "~> 2.0"
 
 group :development, :test do
   gem "rspec", "~> 3.0"

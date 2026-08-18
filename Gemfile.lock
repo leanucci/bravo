@@ -3,14 +3,47 @@ GEM
   specs:
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
+    akami (1.3.2)
+      gyoku (>= 0.4.0)
+      nokogiri
     bigdecimal (4.1.2)
     builder (3.3.0)
     crack (1.0.1)
       bigdecimal
       rexml
+    date (3.5.1)
     diff-lcs (1.6.2)
+    gyoku (1.4.0)
+      builder (>= 2.1.2)
+      rexml (~> 3.0)
     hashdiff (1.2.1)
+    httpi (3.0.1)
+      rack
+    logger (1.7.0)
+    mail (2.9.1)
+      logger
+      mini_mime (>= 0.1.1)
+      net-imap
+      net-pop
+      net-smtp
+    mini_mime (1.1.5)
+    mini_portile2 (2.8.9)
+    net-imap (0.4.25)
+      date
+      net-protocol
+    net-pop (0.1.2)
+      net-protocol
+    net-protocol (0.2.2)
+      timeout
+    net-smtp (0.5.1)
+      net-protocol
+    nokogiri (1.15.7)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
+    nori (2.6.0)
     public_suffix (5.1.1)
+    racc (1.8.1)
+    rack (2.2.24)
     rexml (3.4.4)
     rspec (3.13.2)
       rspec-core (~> 3.13.0)
@@ -25,24 +58,39 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.7)
-    savon (0.7.9)
+    savon (2.15.0)
+      akami (~> 1.2)
       builder (>= 2.1.2)
-      crack (>= 0.1.4)
+      gyoku (~> 1.2)
+      httpi (>= 2.4.5, < 5)
+      mail (~> 2.5)
+      nokogiri (>= 1.8.1)
+      nori (~> 2.4)
+      wasabi (>= 3.7, < 6)
+    timeout (0.6.1)
     vcr (6.4.0)
+    wasabi (4.0.0)
+      addressable
+      httpi (~> 3.0)
+      nokogiri (>= 1.13.9)
     webmock (3.26.2)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
+    wsaa-ruby (0.2.0)
+      savon (~> 2.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   bundler
+  rack (~> 2.0)
   rspec (~> 3.0)
-  savon (~> 0.7.8)
+  savon (~> 2.0)
   vcr (~> 6.0)
   webmock (~> 3.0)
+  wsaa-ruby (~> 0.2)
 
 BUNDLED WITH
    2.4.22
