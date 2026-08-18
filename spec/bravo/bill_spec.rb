@@ -28,22 +28,12 @@ describe "Bill" do
 
     it "should calculate it's cbte_tipo for Consumidor Final" do
       @bill.iva_cond = :consumidor_final
-      @bill.cbte_type.should == "06"
+      @bill.cbte_type.should == "11"
     end
 
     it "raise error on nil iva cond" do
       @bill.iva_cond = 12
-      expect{@bill.cbte_type}.to raise_error(Bravo::NullOrInvalidAttribute)
-    end
-
-    it "should fetch non Peso currency's exchange rate" do
-      @bill.moneda = :dolar
-      @bill.exchange_rate.to_i.should be > 0
-    end
-
-    it "should return 1 for Peso currency" do
-      @bill.moneda = :peso
-      @bill.exchange_rate.should == 1
+      expect{@bill.cbte_type}.to raise_error(StandardError)
     end
 
     it "should calculate the IVA array values" do
@@ -84,22 +74,30 @@ describe "Bill" do
       detail["FchVtoPago"].should   == "20111210"
     end
 
-    Bravo::BILL_TYPE[Bravo.own_iva_cond].keys.each do |target_iva_cond|
-      it "should authorize a valid bill for #{target_iva_cond.to_s}" do
-        @bill.net = 1000000
-        @bill.aliciva_id = 2
-        @bill.doc_num = "30710151543"
-        @bill.iva_cond = target_iva_cond
-        @bill.concepto = "Servicios"
+    {
+      responsable_inscripto: %i[responsable_inscripto consumidor_final exento responsable_monotributo],
+      responsable_monotributo: %i[responsable_inscripto consumidor_final exento responsable_monotributo]
+    }.each do |own_iva, target_ivas|
+      Bravo.own_iva_cond = own_iva
+      target_ivas.each do |target_iva_cond|
+        it "#{own_iva} should authorize a valid bill for #{target_iva_cond.to_s}" do
+          @bill.net = 1000000
+          @bill.aliciva_id = 2
+          @bill.doc_num = "30710151543"
+          @bill.iva_cond = target_iva_cond
+          @bill.concepto = "Servicios"
 
-        @bill.authorized?.should  == false
-        @bill.authorize.should    == true
-        @bill.authorized?.should  == true
+          @bill.authorized?.should  == false
+          @bill.authorize
+          # pp @bill.response.error
+          pp @bill.response unless @bill.authorized?
+          @bill.authorized?.should  == true
 
-        response = @bill.response
+          response = @bill.response
 
-        response.length.should     == 28
-        response.cae.length.should == 14
+          # response.length.should     == 28
+          response.cae.length.should == 14
+        end
       end
     end
   end

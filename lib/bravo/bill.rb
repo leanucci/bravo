@@ -17,18 +17,17 @@ module Bravo
     end
 
     def cbte_type
-      puts ctype = Bravo::BILL_TYPE[Bravo.own_iva_cond][iva_cond] ||
+      Bravo::BILL_TYPE[Bravo.own_iva_cond].fetch(iva_cond) ||
         raise(NullOrInvalidAttribute.new, "Please choose a valid document type.")
-      ctype
+    end
+
+    def condicion_iva_receptor_id
+      Bravo::CONDICION_IVA_RECEPTOR[iva_cond] ||
+        raise(NullOrInvalidAttribute.new, "Please choose a valid IVA condition for the receiver.")
     end
 
     def exchange_rate
-      return 1 if moneda == :peso
-      response = client.fe_param_get_cotizacion do |soap|
-        soap.namespaces["xmlns"] = "http://ar.gov.afip.dif.FEV1/"
-        soap.body = body.merge!({"MonId" => Bravo::MONEDAS[moneda][:codigo]})
-      end
-      response.to_hash[:fe_param_get_cotizacion_response][:fe_param_get_cotizacion_result][:result_get][:mon_cotiz].to_f
+      Bravo::Reference.new.exchange_rate(moneda)
     end
 
     def total
@@ -36,8 +35,12 @@ module Bravo
     end
 
     def iva_sum
-      @iva_sum = net * Bravo::ALIC_IVA[aliciva_id][1]
-      @iva_sum.round_up_with_precision(2)
+      if cbte_type == '11'
+        @iva_sum = 0
+      else
+        @iva_sum = net * Bravo::ALIC_IVA[aliciva_id][1]
+        @iva_sum.round_up_with_precision(2)
+      end
     end
 
     def authorize
@@ -66,18 +69,21 @@ module Bravo
                         "MonCotiz"    => exchange_rate,
                         "ImpOpEx"     => 0.00,
                         "ImpTrib"     => 0.00,
-                        "CondicionIVAReceptorId" => "6",
-                        "Iva"         => {
-                          "AlicIva" => {
-                            "Id" => "5",
-                            "BaseImp" => net,
-                            "Importe" => iva_sum}}}}}}
+                        "CondicionIVAReceptorId" => condicion_iva_receptor_id,
+                      }}}}
 
       detail = fecaereq["FeCAEReq"]["FeDetReq"]["FECAEDetRequest"]
 
       detail["DocNro"]    = doc_num
       detail["ImpNeto"]   = net.to_f
-      detail["ImpIVA"]    = iva_sum
+      detail["ImpIVA"] = iva_sum
+      unless cbte_type == '11'
+        fecaereq['FeCAEReq']['FeDetReq']['FECAEDetRequest']['Iva'] = {
+          "AlicIva" => {
+            "Id" => "5",
+            "BaseImp" => net,
+            "Importe" => iva_sum}}
+      end
       detail["ImpTotal"]  = total
       detail["CbteDesde"] = detail["CbteHasta"] = next_bill_number
 
@@ -106,7 +112,7 @@ module Bravo
     private
 
     class << self
-      def header(cbte_type)#todo sacado de la factura
+      def header(cbte_type)
         {"CantReg" => "1", "CbteTipo" => cbte_type, "PtoVta" => Bravo.sale_point}
       end
     end
@@ -118,13 +124,15 @@ module Bravo
 
       response_header = result[:fe_cab_resp]
       response_detail = result[:fe_det_resp][:fecae_det_response]
+      error_detail = { errors: response_detail.fetch(:observaciones, {}).fetch(:obs, {})}
 
       request_header  = body["FeCAEReq"]["FeCabReq"].underscore_keys.symbolize_keys
       request_detail  = body["FeCAEReq"]["FeDetReq"]["FECAEDetRequest"].underscore_keys.symbolize_keys
 
-      iva             = request_detail.delete(:iva)["AlicIva"].underscore_keys.symbolize_keys
-
-      request_detail.merge!(iva)
+      if cbte_type != '11'
+        iva             = request_detail.delete(:iva)["AlicIva"].underscore_keys.symbolize_keys
+        request_detail.merge!(iva)
+      end
 
       response_hash = {:header_result => response_header.delete(:resultado),
                        :authorized_on => response_header.delete(:fch_proceso),
@@ -137,7 +145,7 @@ module Bravo
                        :cotizacion    => request_detail.delete(:mon_cotiz),
                        :iva_base_imp  => request_detail.delete(:base_imp),
                        :doc_num       => request_detail.delete(:doc_nro)
-                       }.merge!(request_header).merge!(request_detail)
+      }.merge!(request_header).merge!(request_detail).merge!(error_detail)
 
       keys, values  = response_hash.to_a.transpose
       self.response = (defined?(Struct::Response) ? Struct::Response : Struct.new("Response", *keys)).new(*values)
