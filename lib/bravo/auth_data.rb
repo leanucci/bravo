@@ -10,17 +10,9 @@ module Bravo
       ##
       # Fetches authentication credentials and sets TOKEN/SIGN constants.
       #
-      # @raise [RuntimeError] If pkey or cert files do not exist.
+      # @raise [Wsaa::ConfigurationError] If pkey or cert configuration is invalid.
       # @raise [Wsaa::AuthenticationError] If authentication fails.
       def fetch
-        unless File.exist?(Bravo.pkey)
-          raise "Archivo de llave privada no encontrado en #{Bravo.pkey}"
-        end
-
-        unless File.exist?(Bravo.cert)
-          raise "Archivo certificado no encontrado en #{Bravo.cert}"
-        end
-
         environment = Bravo.auth_url.include?("homo") ? :testing : :production
 
         Wsaa.configure do |config|
