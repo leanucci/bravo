@@ -1,0 +1,220 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://wsaahomo.afip.gov.ar/ws/services/LoginCms?WSDL
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - text/xml;charset=utf-8
+      Keep-Alive:
+      - timeout=5, max=100
+      Vary:
+      - Accept-Encoding
+      Accept-Ranges:
+      - bytes
+      Connection:
+      - Keep-Alive
+      Date:
+      - Tue, 18 Aug 2026 16:07:41 GMT
+      Age:
+      - '1924'
+      Content-Length:
+      - '1122'
+      Set-Cookie:
+      - f5avraaaaaaaaaaaaaaaa_session_=PPGECJOHDDNEHDMDKLHAJDGNOGEOPLODLNPIPICHFENIFGILAEENFNKACAEKFDAGEFEDGCMJCDJGFNLNJAGAGBDEAIKAEJBCHPPGHCNNGKFMANLHGOBMMMMOMBJBFJPJ;
+        HttpOnly; secure;
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <wsdl:definitions targetNamespace="https://wsaahomo.afip.gov.ar/ws/services/LoginCms" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="https://wsaahomo.afip.gov.ar/ws/services/LoginCms" xmlns:intf="https://wsaahomo.afip.gov.ar/ws/services/LoginCms" xmlns:tns1="http://wsaa.view.sua.dvadac.desein.afip.gov" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <!--WSDL created by Apache Axis version: 1.4
+        Built on Apr 22, 2006 (06:55:48 PDT)-->
+         <wsdl:types>
+          <schema elementFormDefault="qualified" targetNamespace="http://wsaa.view.sua.dvadac.desein.afip.gov" xmlns="http://www.w3.org/2001/XMLSchema">
+           <import namespace="https://wsaahomo.afip.gov.ar/ws/services/LoginCms"/>
+           <element name="loginCms">
+            <complexType>
+             <sequence>
+              <element name="in0" type="xsd:string"/>
+             </sequence>
+            </complexType>
+           </element>
+           <element name="loginCmsResponse">
+            <complexType>
+             <sequence>
+              <element name="loginCmsReturn" type="xsd:string"/>
+             </sequence>
+            </complexType>
+           </element>
+          </schema>
+          <schema elementFormDefault="qualified" targetNamespace="https://wsaahomo.afip.gov.ar/ws/services/LoginCms" xmlns="http://www.w3.org/2001/XMLSchema">
+           <complexType name="LoginFault">
+            <sequence/>
+           </complexType>
+           <element name="fault" type="impl:LoginFault"/>
+          </schema>
+         </wsdl:types>
+
+           <wsdl:message name="loginCmsRequest">
+
+              <wsdl:part element="tns1:loginCms" name="parameters">
+
+              </wsdl:part>
+
+           </wsdl:message>
+
+           <wsdl:message name="LoginFault">
+
+              <wsdl:part element="impl:fault" name="fault">
+
+              </wsdl:part>
+
+           </wsdl:message>
+
+           <wsdl:message name="loginCmsResponse">
+
+              <wsdl:part element="tns1:loginCmsResponse" name="parameters">
+
+              </wsdl:part>
+
+           </wsdl:message>
+
+           <wsdl:portType name="LoginCMS">
+
+              <wsdl:operation name="loginCms">
+
+                 <wsdl:input message="impl:loginCmsRequest" name="loginCmsRequest">
+
+               </wsdl:input>
+
+                 <wsdl:output message="impl:loginCmsResponse" name="loginCmsResponse">
+
+               </wsdl:output>
+
+                 <wsdl:fault message="impl:LoginFault" name="LoginFault">
+
+               </wsdl:fault>
+
+              </wsdl:operation>
+
+           </wsdl:portType>
+
+           <wsdl:binding name="LoginCmsSoapBinding" type="impl:LoginCMS">
+
+              <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+              <wsdl:operation name="loginCms">
+
+                 <wsdlsoap:operation soapAction=""/>
+
+                 <wsdl:input name="loginCmsRequest">
+
+                    <wsdlsoap:body use="literal"/>
+
+                 </wsdl:input>
+
+                 <wsdl:output name="loginCmsResponse">
+
+                    <wsdlsoap:body use="literal"/>
+
+                 </wsdl:output>
+
+                 <wsdl:fault name="LoginFault">
+
+                    <wsdlsoap:fault name="LoginFault" use="literal"/>
+
+                 </wsdl:fault>
+
+              </wsdl:operation>
+
+           </wsdl:binding>
+
+           <wsdl:service name="LoginCMSService">
+
+              <wsdl:port binding="impl:LoginCmsSoapBinding" name="LoginCms">
+
+                 <wsdlsoap:address location="https://wsaahomo.afip.gov.ar/ws/services/LoginCms"/>
+
+              </wsdl:port>
+
+           </wsdl:service>
+
+        </wsdl:definitions>
+  recorded_at: Tue, 18 Aug 2026 16:07:41 GMT
+- request:
+    method: post
+    uri: https://wsaahomo.afip.gov.ar/ws/services/LoginCms
+    body:
+      encoding: UTF-8
+      string: <?xml version="1.0" encoding="UTF-8"?><env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns1="https://wsaahomo.afip.gov.ar/ws/services/LoginCms"
+        xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:apachesoap="http://xml.apache.org/xml-soap"
+        xmlns:impl="https://wsaahomo.afip.gov.ar/ws/services/LoginCms" xmlns:intf="https://wsaahomo.afip.gov.ar/ws/services/LoginCms"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+        xmlns:ins0="http://wsaa.view.sua.dvadac.desein.afip.gov"><env:Body><ins0:loginCms><ins0:in0>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</ins0:in0></ins0:loginCms></env:Body></env:Envelope>
+    headers:
+      Soapaction:
+      - '"loginCms"'
+      Content-Type:
+      - text/xml;charset=UTF-8
+      Content-Length:
+      - '2918'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 18 Aug 2026 16:07:41 GMT
+      Content-Type:
+      - text/xml;charset=utf-8
+      Set-Cookie:
+      - TS01b14f84=01ef919f3007ee32bd3fd19b8660c423bd6c1e1f056b3b14315db1ddfc9a0764b76ff2460899b4e1fdb9eff4c5173218dc202801aeb97d9029357d4ccae292e9d385bb9ff1;
+        Path=/;
+      - f5avraaaaaaaaaaaaaaaa_session_=NMFOLKECGIFIAHDFBALIGCMNMFBDCDBOHCFGJPCDNBAJBMBMCDIJKIPAOGEGAMMNMKODNCIDCDIBNLFGDPKAGFBDAIOKBPDOBGCLGEODFONGKONFLDCFMBFLHJBHGNHB;
+        HttpOnly; secure;
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><soapenv:Body><loginCmsResponse xmlns="http://wsaa.view.sua.dvadac.desein.afip.gov"><loginCmsReturn>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+        &lt;loginTicketResponse version=&quot;1.0&quot;&gt;
+            &lt;header&gt;
+                &lt;source&gt;CN=wsaahomo, O=AFIP, C=AR, SERIALNUMBER=CUIT 33693450239&lt;/source&gt;
+                &lt;destination&gt;SERIALNUMBER=CUIT 20287740027, CN=leandro&lt;/destination&gt;
+                &lt;uniqueId&gt;4234009246&lt;/uniqueId&gt;
+                &lt;generationTime&gt;2026-08-18T13:07:41.976-03:00&lt;/generationTime&gt;
+                &lt;expirationTime&gt;2026-08-19T01:07:41.976-03:00&lt;/expirationTime&gt;
+            &lt;/header&gt;
+            &lt;credentials&gt;
+                &lt;token&gt;PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/Pgo8c3NvIHZlcnNpb249IjIuMCI+CiAgICA8aWQgc3JjPSJDTj13c2FhaG9tbywgTz1BRklQLCBDPUFSLCBTRVJJQUxOVU1CRVI9Q1VJVCAzMzY5MzQ1MDIzOSIgZHN0PSJDTj13c2ZlLCBPPUFGSVAsIEM9QVIiIHVuaXF1ZV9pZD0iMjA3NjkyMTI1NSIgZ2VuX3RpbWU9IjE3ODcwNjkyMDEiIGV4cF90aW1lPSIxNzg3MTEyNDYxIi8+CiAgICA8b3BlcmF0aW9uIHR5cGU9ImxvZ2luIiB2YWx1ZT0iZ3JhbnRlZCI+CiAgICAgICAgPGxvZ2luIGVudGl0eT0iMzM2OTM0NTAyMzkiIHNlcnZpY2U9IndzZmUiIHVpZD0iU0VSSUFMTlVNQkVSPUNVSVQgMjAyODc3NDAwMjcsIENOPWxlYW5kcm8iIGF1dGhtZXRob2Q9ImNtcyIgcmVnbWV0aG9kPSIyMiI+CiAgICAgICAgICAgIDxyZWxhdGlvbnM+CiAgICAgICAgICAgICAgICA8cmVsYXRpb24ga2V5PSIyMDI4Nzc0MDAyNyIgcmVsdHlwZT0iNCIvPgogICAgICAgICAgICA8L3JlbGF0aW9ucz4KICAgICAgICA8L2xvZ2luPgogICAgPC9vcGVyYXRpb24+Cjwvc3NvPgo=&lt;/token&gt;
+                &lt;sign&gt;cxc1cEq0Uly8IfrNVyZMvCqoKTf7jo6NhMvendG70h/7ff5uL/0u1ev1tQqFnRi+KUQ3DTjZXQRCS3gSI5bz4lmc6lh/9DNsWAJASV1S671W6MOjTcVKP11N1p06ym4fYIt4fiQdPh+qWoyOJDSXmfMYEF6Z6m69Kp317aCtNdQ=&lt;/sign&gt;
+            &lt;/credentials&gt;
+        &lt;/loginTicketResponse&gt;
+        </loginCmsReturn></loginCmsResponse></soapenv:Body></soapenv:Envelope>
+  recorded_at: Tue, 18 Aug 2026 16:07:41 GMT
+recorded_with: VCR 6.4.0
