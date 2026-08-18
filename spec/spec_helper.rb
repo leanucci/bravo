@@ -31,11 +31,13 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    unless Bravo.const_defined?(:TOKEN)
-      Bravo.const_set(:TOKEN, "test_token")
-      Bravo.const_set(:SIGN, "test_sign")
+    unless ENV['VCR_RECORD']
+      unless Bravo.const_defined?(:TOKEN)
+        Bravo.const_set(:TOKEN, "test_token")
+        Bravo.const_set(:SIGN, "test_sign")
+      end
+      allow(Bravo::AuthData).to receive(:fetch)
     end
-    allow(Bravo::AuthData).to receive(:fetch)
   end
 end
 
@@ -47,3 +49,8 @@ Bravo.default_concepto = "Productos y Servicios"
 Bravo.default_documento = "CUIT"
 Bravo.default_moneda = :peso
 Bravo.own_iva_cond = :responsable_inscripto
+
+if ENV['VCR_RECORD']
+  Bravo.pkey = "spec/fixtures/pkey"
+  Bravo.cert = "spec/fixtures/cert.crt"
+end
