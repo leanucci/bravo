@@ -28,3 +28,16 @@ log/*.log
 fixtures/
 fixtures/*
 *.gem
+
+# Documentation files
+*.pdf
+*.xls
+*.xlsx
+
+# Private keys and certificates
+*-pkey
+*-req
+*.pem
+*.key
+*.crt
+*.p12
