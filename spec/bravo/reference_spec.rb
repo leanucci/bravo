@@ -122,4 +122,117 @@ describe "Reference" do
       result.first.should have_key(:descripcion)
     end
   end
+
+  describe "#tipos_doc" do
+    it "should return an array of document types" do
+      result = @reference.tipos_doc
+      result.should be_a(Array)
+      result.should_not be_empty
+    end
+
+    it "should return document types with expected keys" do
+      result = @reference.tipos_doc
+      result.first.should have_key(:id)
+      result.first.should have_key(:descripcion)
+    end
+
+    it "should include CUIT document type" do
+      result = @reference.tipos_doc
+      descriptions = result.map { |d| d[:descripcion] }
+      descriptions.any? { |d| d =~ /cuit/i }.should == true
+    end
+  end
+
+  describe "#tipos_tributos" do
+    it "should return an array of tax types" do
+      result = @reference.tipos_tributos
+      result.should be_a(Array)
+      result.should_not be_empty
+    end
+
+    it "should return tax types with expected keys" do
+      result = @reference.tipos_tributos
+      result.first.should have_key(:id)
+      result.first.should have_key(:descripcion)
+    end
+  end
+
+  describe "#tipos_monedas" do
+    it "should return an array of currency types" do
+      result = @reference.tipos_monedas
+      result.should be_a(Array)
+      result.should_not be_empty
+    end
+
+    it "should return currencies with expected keys" do
+      result = @reference.tipos_monedas
+      result.first.should have_key(:id)
+      result.first.should have_key(:descripcion)
+    end
+
+    it "should include peso currency" do
+      result = @reference.tipos_monedas
+      descriptions = result.map { |m| m[:descripcion] }
+      descriptions.any? { |d| d =~ /peso/i }.should == true
+    end
+  end
+
+  describe "#tipos_opcional" do
+    it "should return an array of optional types" do
+      result = @reference.tipos_opcional
+      result.should be_a(Array)
+      result.should_not be_empty
+    end
+
+    it "should return optional types with expected keys" do
+      result = @reference.tipos_opcional
+      result.first.should have_key(:id)
+      result.first.should have_key(:descripcion)
+    end
+  end
+
+  describe "#ptos_venta" do
+    it "should return an array of sales points" do
+      result = @reference.ptos_venta
+      result.should be_a(Array)
+    end
+
+    it "should return sales points with expected keys" do
+      result = @reference.ptos_venta
+      next if result.empty?
+
+      pto = result.first
+      pto.should have_key(:nro)
+      pto.should have_key(:emision_tipo)
+      pto.should have_key(:bloqueado)
+      pto.should have_key(:fch_baja)
+    end
+
+    it "should return integer nro" do
+      result = @reference.ptos_venta
+      next if result.empty?
+
+      result.first[:nro].should be_a(Integer)
+    end
+  end
+
+  describe "#tipos_paises" do
+    it "should return an array of country types" do
+      result = @reference.tipos_paises
+      result.should be_a(Array)
+      result.should_not be_empty
+    end
+
+    it "should return countries with expected keys" do
+      result = @reference.tipos_paises
+      result.first.should have_key(:id)
+      result.first.should have_key(:descripcion)
+    end
+
+    it "should include Argentina" do
+      result = @reference.tipos_paises
+      descriptions = result.map { |p| p[:descripcion] }
+      descriptions.any? { |d| d =~ /argentina/i }.should == true
+    end
+  end
 end
