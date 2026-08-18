@@ -1,3 +1,15 @@
+*Bravo 2.0.0 (August 18, 2026)*
+
+* BREAKING: Upgraded Savon from 0.7.x to 2.0
+* BREAKING: Authentication now uses wsaa-ruby gem instead of bash script
+* BREAKING: Removed Authorizer class
+* BREAKING: Requires Ruby 2.7+
+* Added Parameter Query endpoints: tipos_doc, tipos_tributos, tipos_monedas, tipos_opcional, ptos_venta, tipos_paises
+* Added CAE query endpoints: consultar_comprobante, solicitar_caea, consultar_caea
+* Added GitHub Actions CI for Ruby 2.7, 3.0, 3.1, 3.2, 3.3
+* Added VCR/WebMock for test isolation
+* Modernized gemspec
+
 *Bravo 0.4.0 (March 21, 2011)*
 
 * Auth service URL is now part of the config [miloops]
